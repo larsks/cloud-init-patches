@@ -699,13 +699,16 @@ USERCTL=no
             ],
         }
         macs = {'fa:16:3e:ed:9a:59': 'eth0'}
-        render_dir = self.tmp_dir()
+        tmp_dir = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, tmp_dir)
+        render_dir = os.path.join(tmp_dir, "render")
+        os.makedirs(render_dir)
         network_cfg = openstack.convert_net_json(net_json, known_macs=macs)
         ns = network_state.parse_net_config_data(network_cfg,
                                                  skip_broken=False)
         renderer = sysconfig.Renderer()
         with self.assertRaises(ValueError):
-            renderer.render_network_state(ns, render_dir)
+            renderer.render_network_state(render_dir, ns)
         self.assertEqual([], os.listdir(render_dir))
 
     def test_multiple_ipv6_default_gateways(self):
@@ -737,20 +740,24 @@ USERCTL=no
             ],
         }
         macs = {'fa:16:3e:ed:9a:59': 'eth0'}
-        render_dir = self.tmp_dir()
+        tmp_dir = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, tmp_dir)
+        render_dir = os.path.join(tmp_dir, "render")
+        os.makedirs(render_dir)
         network_cfg = openstack.convert_net_json(net_json, known_macs=macs)
         ns = network_state.parse_net_config_data(network_cfg,
                                                  skip_broken=False)
         renderer = sysconfig.Renderer()
         with self.assertRaises(ValueError):
-            renderer.render_network_state(ns, render_dir)
+            renderer.render_network_state(render_dir, ns)
         self.assertEqual([], os.listdir(render_dir))
 
     def test_openstack_rendering_samples(self):
-        tmp_dir = tempfile.mkdtemp()
-        self.addCleanup(shutil.rmtree, tmp_dir)
-        render_dir = os.path.join(tmp_dir, "render")
         for os_sample in OS_SAMPLES:
+            tmp_dir = tempfile.mkdtemp()
+            self.addCleanup(shutil.rmtree, tmp_dir)
+            render_dir = os.path.join(tmp_dir, "render")
+
             ex_input = os_sample['in_data']
             ex_mac_addrs = os_sample['in_macs']
             network_cfg = openstack.convert_net_json(

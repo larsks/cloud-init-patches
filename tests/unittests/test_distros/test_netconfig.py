@@ -247,7 +247,7 @@ NETWORKING=yes
 
             rh_distro.apply_network_config(V1_NET_CFG, False)
 
-            self.assertEqual(len(write_bufs), 5)
+            self.assertEqual(len(write_bufs), 4)
 
             # eth0
             self.assertIn('/etc/sysconfig/network-scripts/ifcfg-eth0',
@@ -279,15 +279,6 @@ DEVICE=eth1
 ONBOOT=yes
 TYPE=Ethernet
 USERCTL=no
-'''
-            self.assertCfgEquals(expected_buf, str(write_buf))
-            self.assertEqual(write_buf.mode, 0o644)
-
-            self.assertIn('/etc/sysconfig/network', write_bufs)
-            write_buf = write_bufs['/etc/sysconfig/network']
-            expected_buf = '''
-# Created by cloud-init v. 0.7
-NETWORKING=yes
 '''
             self.assertCfgEquals(expected_buf, str(write_buf))
             self.assertEqual(write_buf.mode, 0o644)
@@ -394,7 +385,7 @@ IPV6_AUTOCONF=no
 
             rh_distro.apply_network_config(V1_NET_CFG_IPV6, False)
 
-            self.assertEqual(len(write_bufs), 5)
+            self.assertEqual(len(write_bufs), 4)
 
             self.assertIn('/etc/sysconfig/network-scripts/ifcfg-eth0',
                           write_bufs)
@@ -423,17 +414,6 @@ DEVICE=eth1
 ONBOOT=yes
 TYPE=Ethernet
 USERCTL=no
-'''
-            self.assertCfgEquals(expected_buf, str(write_buf))
-            self.assertEqual(write_buf.mode, 0o644)
-
-            self.assertIn('/etc/sysconfig/network', write_bufs)
-            write_buf = write_bufs['/etc/sysconfig/network']
-            expected_buf = '''
-# Created by cloud-init v. 0.7
-NETWORKING=yes
-NETWORKING_IPV6=yes
-IPV6_AUTOCONF=no
 '''
             self.assertCfgEquals(expected_buf, str(write_buf))
             self.assertEqual(write_buf.mode, 0o644)
