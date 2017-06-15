@@ -13,8 +13,7 @@ is_azure() {
 }
 
 is_enabled() {
-    # only execute hooks if cloud-init is enabled and on azure
-    [ -e /run/cloud-init/enabled ] || return 1
+    # only execute hooks if cloud-init is running on azure
     is_azure
 }
 
